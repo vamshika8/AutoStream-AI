@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dataset Analysis - AutoStream AI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 20px 50px;
+        }
+
+        header h1 {
+            font-size: 28px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .card h3 {
+            color: #64748b;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .section h3 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #111827;
+            color: white;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .success {
+            background: #ecfdf5;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .warning {
+            background: #fff7ed;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 13px 22px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background: #1d4ed8;
+        }
+
+        .scroll-table {
+            overflow-x: auto;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            margin-bottom: 20px;
+        }
+
+        .ml-section {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .ml-section h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .ml-section p {
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .heatmap {
+            overflow-x: auto;
+        }
+
+        .heatmap table {
+            min-width: 800px;
+        }
+
+        .heatmap td {
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid white;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>AutoStream AI</h1>
+
+</header>
+
+
+<div class="container">
+
+
+    <!-- TITLE -->
+
+    <h2>Dataset Analysis</h2>
+
+    <p class="subtitle">
+
+        File:
+        <strong>{{ filename }}</strong>
+
+    </p>
+
+
+    <!-- SUMMARY CARDS -->
+
+    <div class="cards">
+
+
+        <div class="card">
+
+            <h3>Total Rows</h3>
+
+            <div class="value">
+                {{ rows }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Total Columns</h3>
+
+            <div class="value">
+                {{ columns }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Numeric Columns</h3>
+
+            <div class="value">
+                {{ numeric_columns|length }}
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Categorical Columns</h3>
+
+            <div class="value">
+                {{ categorical_columns|length }}
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- DATA QUALITY -->
+
+    <div class="section">
+
+        <h3>Data Quality</h3>
+
+
+        {% if total_missing == 0 %}
+
+            <div class="success">
+
+                🟢
+
+                <strong>
+                    No missing values found.
+                </strong>
+
+                Your dataset is already clean.
+
+            </div>
+
+        {% else %}
+
+            <div class="warning">
+
+                🟡
+
+                <strong>
+                    Missing values detected.
+                </strong>
+
+                AutoStream cleaned
+
+                <strong>
+                    {{ cleaned_values }}
+                </strong>
+
+                missing values automatically.
+
+            </div>
+
+        {% endif %}
+
+
+        <p>
+
+            Missing values before cleaning:
+
+            <strong>
+                {{ total_missing }}
+            </strong>
+
+        </p>
+
+
+        <p style="margin-top:10px;">
+
+            Missing values after cleaning:
+
+            <strong>
+                {{ missing_after }}
+            </strong>
+
+        </p>
+
+
+    </div>
+
+
+    <!-- DATASET STATISTICS -->
+
+    <div class="section">
+
+        <h3>Dataset Statistics</h3>
+
+        <p class="subtitle">
+
+            Statistical summary of the numerical
+            features in your dataset.
+
+        </p>
+
+
+        <div class="scroll-table">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Feature</th>
+
+                        <th>Mean</th>
+
+                        <th>Median</th>
+
+                        <th>Minimum</th>
+
+                        <th>Maximum</th>
+
+                        <th>Std Dev</th>
+
+                        <th>Unique</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for item in statistics %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ item.feature }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ item.mean }}
+                        </td>
+
+                        <td>
+                            {{ item.median }}
+                        </td>
+
+                        <td>
+                            {{ item.minimum }}
+                        </td>
+
+                        <td>
+                            {{ item.maximum }}
+                        </td>
+
+                        <td>
+                            {{ item.std }}
+                        </td>
+
+                        <td>
+                            {{ item.unique }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- CORRELATION -->
+
+    <div class="section">
+
+        <h3>
+            Feature Correlation
+        </h3>
+
+        <p class="subtitle">
+
+            Correlation between numerical
+            features in the dataset.
+
+        </p>
+
+
+        <div class="heatmap">
+
+            <table id="correlationTable">
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- COLUMN INFORMATION -->
+
+    <div class="section">
+
+        <h3>
+            Columns Detected
+        </h3>
+
+
+        <p>
+
+            <strong>
+                Numeric Columns:
+            </strong>
+
+            {{ numeric_columns|join(", ") }}
+
+        </p>
+
+
+        <br>
+
+
+        <p>
+
+            <strong>
+                Categorical Columns:
+            </strong>
+
+
+            {% if categorical_columns %}
+
+                {{ categorical_columns|join(", ") }}
+
+            {% else %}
+
+                None
+
+            {% endif %}
+
+        </p>
+
+
+    </div>
+
+
+    <!-- MACHINE LEARNING SECTION -->
+
+    <div class="ml-section">
+
+        <h3>
+            🤖 Prepare Machine Learning
+        </h3>
+
+
+        <p>
+
+            Select the column you want
+            AutoStream AI to predict.
+
+        </p>
+
+
+        <form action="/train"
+              method="POST">
+
+
+            <label
+                class="label"
+                for="target">
+
+                Target Column
+
+            </label>
+
+
+            <select
+                id="target"
+                name="target"
+                required>
+
+
+                <option value="">
+                    -- Select Target Column --
+                </option>
+
+
+                {% for column in column_names %}
+
+                    <option value="{{ column }}">
+
+                        {{ column }}
+
+                    </option>
+
+                {% endfor %}
+
+
+            </select>
+
+
+            <button
+                type="submit"
+                class="button">
+
+                🚀 Prepare Machine Learning
+
+            </button>
+
+
+        </form>
+
+    </div>
+
+
+    <!-- ANALYZE ANOTHER FILE -->
+
+    <a href="/"
+       class="button">
+
+        Analyze Another File
+
+    </a>
+
+
+</div>
+
+
+<!-- CORRELATION SCRIPT -->
+
+<script>
+
+    const correlationData =
+        {{ correlation | tojson }};
+
+
+    const features =
+        Object.keys(correlationData);
+
+
+    const table =
+        document.getElementById(
+            "correlationTable"
+        );
+
+
+    if (features.length > 0) {
+
+
+        let header = "<tr>";
+
+
+        header += `
+            <th>
+                Feature
+            </th>
+        `;
+
+
+        features.forEach(function(feature) {
+
+            header += `
+                <th>
+                    ${feature}
+                </th>
+            `;
+
+        });
+
+
+        header += "</tr>";
+
+
+        table.innerHTML = header;
+
+
+        features.forEach(function(feature) {
+
+
+            let row = `
+
+                <tr>
+
+                    <th>
+                        ${feature}
+                    </th>
+
+            `;
+
+
+            features.forEach(function(otherFeature) {
+
+
+                const value =
+                    correlationData[feature][otherFeature];
+
+
+                const intensity =
+                    Math.abs(value);
+
+
+                let background;
+
+
+                if (intensity >= 0.8) {
+
+                    background =
+                        "rgba(37,99,235,0.85)";
+
+                }
+
+                else if (intensity >= 0.5) {
+
+                    background =
+                        "rgba(37,99,235,0.55)";
+
+                }
+
+                else if (intensity >= 0.2) {
+
+                    background =
+                        "rgba(37,99,235,0.30)";
+
+                }
+
+                else {
+
+                    background =
+                        "rgba(37,99,235,0.10)";
+
+                }
+
+
+                row += `
+
+                    <td style="
+                        background:${background};
+                    ">
+
+                        ${value}
+
+                    </td>
+
+                `;
+
+            });
+
+
+            row += "</tr>";
+
+
+            table.innerHTML += row;
+
+
+        });
+
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

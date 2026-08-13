@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction - AutoStream AI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 20px 50px;
+        }
+
+        header h1 {
+            font-size: 28px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .box {
+            background: white;
+            padding: 35px;
+            border-radius: 14px;
+
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .predict-button {
+            width: 100%;
+            padding: 14px;
+
+            background: #2563eb;
+            color: white;
+
+            border: none;
+            border-radius: 8px;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .predict-button:hover {
+            background: #1d4ed8;
+        }
+
+        .back-button {
+            display: inline-block;
+
+            margin-top: 20px;
+
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>AutoStream AI</h1>
+
+</header>
+
+
+<div class="container">
+
+
+    <div class="box">
+
+        <h2>Make a Prediction</h2>
+
+        <p class="description">
+            Enter the values below to get a prediction
+            from your trained machine learning model.
+        </p>
+
+
+        <form action="/predict" method="POST">
+
+
+            {% for feature in features %}
+
+                <div class="field">
+
+                    <label>
+                        {{ feature }}
+                    </label>
+
+                    <input
+                        type="number"
+                        step="any"
+                        name="{{ feature }}"
+                        placeholder="Enter {{ feature }}"
+                        required
+                    >
+
+                </div>
+
+            {% endfor %}
+
+
+            <button
+                type="submit"
+                class="predict-button">
+
+                Predict
+
+            </button>
+
+
+        </form>
+
+
+        <a href="/" class="back-button">
+            ← Analyze Another File
+        </a>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>
